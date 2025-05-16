@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NextFiles - Aplikasi File Manager Modern</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #1f1f1f;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4caf50;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        }
+        #content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 2rem;
+        }
+        #permission-request {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        #permission-request p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: #4caf50;
+            border: none;
+            border-radius: 6px;
+            padding: 1rem 1.75rem;
+            color: #121212;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76,175,80,0.4);
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+        button:hover {
+            background: #388e3c;
+        }
+        #file-manager {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        #path-bar {
+            background: #212121;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            user-select: text;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+            color: #c8e6c9;
+        }
+        #controls {
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+        #file-list {
+            flex: 1;
+            overflow-y: auto;
+            background: #1c1c1c;
+            border-radius: 6px;
+            padding: 1rem;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+        ul.files {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        ul.files > li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        ul.files > li:hover {
+            background: #2a2a2a;
+        }
+        ul.files > li.directory::before {
+            content: "📁";
+            margin-right: 0.5rem;
+        }
+        ul.files > li.file::before {
+            content: "📄";
+            margin-right: 0.5rem;
+        }
+        ul.files > li .actions button {
+            background: transparent;
+            border: none;
+            color: #4caf50;
+            font-size: 1.2rem;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        ul.files > li .actions button:hover {
+            color: #81c784;
+        }
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom:0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        .modal-content {
+            background: #242424;
+            border-radius: 12px;
+            padding: 2rem 3rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.9);
+            color: #e0e0e0;
+            text-align: center;
+            user-select: none;
+        }
+        .modal-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .modal-content button {
+            background: #4caf50;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 8px;
+            margin: 0 0.6rem;
+            cursor: pointer;
+            color: #121212;
+            box-shadow: 0 4px 16px rgba(76,175,80,0.6);
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+        .modal-content button:hover {
+            background: #388e3c;
+        }
+        .modal-content button.close-btn {
+            background: #b71c1c;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(183,28,28,0.75);
+            transition: background-color 0.3s ease;
+        }
+        .modal-content button.close-btn:hover {
+            background: #7f0000;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        input[type="text"] {
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            width: 100%;
+            user-select: text;
+            background: #333;
+            color: #eee;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.33rem;
+            color: #bdbdbd;
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1c1c;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4caf50;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #388e3c;
+        }
+    </style>
+</head>
+<body>
+<header>NextFiles</header>
+<div id="content">
+  <div id="permission-request" class="centered-view" tabindex="0">
+    <p>Aplikasi NextFiles membutuhkan izin untuk membaca isi file handphone kamu.</p>
+    <button id="btn-request-permission" aria-label="Izinkan NextFiles untuk membaca isi file handphone kamu">
+      Izinkan NextFiles untuk membaca isi file handphone kamu
+    </button>
+  </div>
+
+  <div id="file-manager" aria-label="File Manager">
+    <div id="path-bar" aria-live="polite" aria-atomic="true">Path: /</div>
+    <div id="controls">
+      <button id="btn-create-folder">Buat Folder</button>
+      <button id="btn-create-file">Buat File</button>
+      <button id="btn-paste" disabled>Paste</button>
+    </div>
+    <div id="file-list" role="list" tabindex="0">
+      <ul class="files" id="files-ul"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for processing -->
+<div id="modal-processing" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-message" aria-describedby="modal-buttons">
+  <div class="modal-content">
+    <p id="modal-message-processing">System Sedang Memproses Semua Data, Silahkan Masuk Lagi</p>
+    <button id="btn-open-app">Buka Aplikasi</button>
+    <button id="btn-close-popup" class="close-btn">Close Aplikasi</button>
+  </div>
+</div>
+
+<!-- Modal for rename confirmation -->
+<div id="modal-rename-confirm" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-message-rename" aria-describedby="modal-buttons-rename">
+  <div class="modal-content">
+    <p id="modal-message-rename">Apakah Kamu Yakni Ingin Rename Folder/File Ini?</p>
+    <input type="text" id="rename-input" aria-label="Nama baru folder/file" />
+    <div style="margin-top:1.5rem;">
+      <button id="btn-rename-yes">Ya</button>
+      <button id="btn-rename-no" class="close-btn">Tidak</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  'use strict';
+
+  const btnRequestPermission = document.getElementById('btn-request-permission');
+  const permissionRequestDiv = document.getElementById('permission-request');
+  const fileManagerDiv = document.getElementById('file-manager');
+  const pathBar = document.getElementById('path-bar');
+  const filesUl = document.getElementById('files-ul');
+  const btnCreateFolder = document.getElementById('btn-create-folder');
+  const btnCreateFile = document.getElementById('btn-create-file');
+  const btnPaste = document.getElementById('btn-paste');
+  const modalProcessing = document.getElementById('modal-processing');
+  const btnOpenApp = document.getElementById('btn-open-app');
+  const btnClosePopup = document.getElementById('btn-close-popup');
+
+  const modalRenameConfirm = document.getElementById('modal-rename-confirm');
+  const btnRenameYes = document.getElementById('btn-rename-yes');
+  const btnRenameNo = document.getElementById('btn-rename-no');
+  const renameInput = document.getElementById('rename-input');
+
+  let rootHandle = null;
+  let currentDirHandle = null;
+  let clipboardFileHandle = null;
+  let isCutOperation = false;
+
+  let entryToRename = null;
+
+  // Check if File System Access API is supported
+  function isFileSystemAccessAPISupported() {
+    return 'showDirectoryPicker' in window && 'FileSystemFileHandle' in window;
+  }
+
+  // Show modal processing message
+  function showProcessingModal() {
+    modalProcessing.classList.add('show');
+  }
+  function hideProcessingModal() {
+    modalProcessing.classList.remove('show');
+  }
+  btnOpenApp.addEventListener('click', () => {
+    hideProcessingModal();
+    showFileManager();
+  });
+  btnClosePopup.addEventListener('click', () => {
+    hideProcessingModal();
+    requestPermissionUI();
+  });
+
+  // Show/hide rename confirmation modal
+  function showRenameModal(entry) {
+    entryToRename = entry;
+    renameInput.value = entry.name;
+    modalRenameConfirm.classList.add('show');
+    renameInput.focus();
+    renameInput.select();
+  }
+  function hideRenameModal() {
+    modalRenameConfirm.classList.remove('show');
+    entryToRename = null;
+  }
+  btnRenameNo.addEventListener('click', () => {
+    hideRenameModal();
+  });
+  btnRenameYes.addEventListener('click', async () => {
+    const newName = renameInput.value.trim();
+    if (!newName) {
+      alert('Nama tidak boleh kosong.');
+      return;
+    }
+    if (newName === entryToRename.name) {
+      hideRenameModal();
+      return;
+    }
+    try {
+      // Confirm user intention: rename disabled for system damage per ethical limits
+      // Just rename normally, no dangerous action implemented.
+      await renameEntry(entryToRename, newName);
+      loadFiles(currentDirHandle);
+    } catch (err) {
+      alert('Gagal mengganti nama: ' + err.message);
+    }
+    hideRenameModal();
+  });
+
+  // Initial UI state setup
+  function requestPermissionUI() {
+    permissionRequestDiv.style.display = 'flex';
+    fileManagerDiv.style.display = 'none';
+  }
+  function showFileManager() {
+    permissionRequestDiv.style.display = 'none';
+    fileManagerDiv.style.display = 'flex';
+    if (currentDirHandle) {
+      loadFiles(currentDirHandle);
+    }
+  }
+
+  // Prompt user to pick directory for permission
+  async function requestPermission() {
+    try {
+      const handle = await window.showDirectoryPicker();
+      if (handle) {
+        rootHandle = handle;
+        currentDirHandle = handle;
+        renderPathBar();
+        showProcessingModal();
+        sessionStorage.setItem('nextfiles_permission_granted', 'true');
+      }
+    } catch (e) {
+      if (e.name === 'AbortError') {
+        alert('Izin tidak diberikan, konten tidak dapat dibuka.');
+      } else {
+        alert('Terjadi kesalahan: ' + e.message);
+      }
+      requestPermissionUI();
+    }
+  }
+
+  btnRequestPermission.addEventListener('click', async () => {
+    await requestPermission();
+  });
+
+  // Render the current path (only root name, API limitation)
+  function renderPathBar() {
+    pathBar.textContent = `Path: /${currentDirHandle?.name || ''}`;
+  }
+
+  // List files and directories inside currentDirHandle
+  async function loadFiles(dirHandle) {
+    filesUl.innerHTML = '';
+    renderPathBar();
+    currentDirHandle = dirHandle;
+
+    const entries = [];
+    try {
+      for await (const entry of dirHandle.values()) {
+        entries.push(entry);
+      }
+    } catch (e) {
+      alert('Gagal membaca isi folder: ' + e.message);
+      return;
+    }
+    entries.sort((a,b) => {
+      if (a.kind === b.kind) return a.name.localeCompare(b.name);
+      return (a.kind === 'directory') ? -1 : 1;
+    });
+
+    if (entries.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = '(Folder kosong)';
+      li.style.fontStyle = 'italic';
+      filesUl.appendChild(li);
+      return;
+    }
+
+    for (const entry of entries) {
+      const li = document.createElement('li');
+      li.textContent = entry.name;
+      li.className = entry.kind;
+      li.setAttribute('role', 'listitem');
+      li.tabIndex = 0;
+
+      // Create action buttons container
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'actions';
+
+      // Rename button -> uses new modal
+      const btnRename = document.createElement('button');
+      btnRename.title = 'Rename';
+      btnRename.innerHTML = '✏️';
+      btnRename.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showRenameModal(entry);
+      });
+      actionsDiv.appendChild(btnRename);
+
+      // Delete button
+      const btnDelete = document.createElement('button');
+      btnDelete.title = 'Hapus';
+      btnDelete.innerHTML = '🗑️';
+      btnDelete.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (confirm(`Hapus "${entry.name}"? Tindakan ini tidak bisa dibatalkan.`)) {
+          try {
+            await deleteEntry(entry);
+            loadFiles(currentDirHandle);
+            if (clipboardFileHandle && clipboardFileHandle.name === entry.name) {
+              clipboardFileHandle = null;
+              btnPaste.disabled = true;
+              alert('Item di clipboard dihapus.');
+            }
+          } catch (err) {
+            alert('Gagal menghapus: ' + err.message);
+          }
+        }
+      });
+      actionsDiv.appendChild(btnDelete);
+
+      // Copy button
+      const btnCopy = document.createElement('button');
+      btnCopy.title = 'Copy';
+      btnCopy.innerHTML = '📋';
+      btnCopy.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clipboardFileHandle = entry;
+        isCutOperation = false;
+        btnPaste.disabled = false;
+        alert(`"${entry.name}" disalin.`);
+      });
+      actionsDiv.appendChild(btnCopy);
+
+      // Cut button
+      const btnCut = document.createElement('button');
+      btnCut.title = 'Cut';
+      btnCut.innerHTML = '✂️';
+      btnCut.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clipboardFileHandle = entry;
+        isCutOperation = true;
+        btnPaste.disabled = false;
+        alert(`"${entry.name}" dipotong.`);
+      });
+      actionsDiv.appendChild(btnCut);
+
+      li.appendChild(actionsDiv);
+
+      li.addEventListener('click', async () => {
+        if (entry.kind === 'directory') {
+          currentDirHandle = entry;
+          loadFiles(entry);
+        } else {
+          try {
+            const file = await entry.getFile();
+            alert(`Membuka file: ${entry.name}\nUkuran: ${file.size} bytes`);
+          } catch (err) {
+            alert('Gagal membuka file: ' + err.message);
+          }
+        }
+      });
+
+      filesUl.appendChild(li);
+    }
+  }
+
+  // Rename entry: copies file contents and deletes old file; folders not renamed (API limitation)
+  async function renameEntry(entry, newName) {
+    if (entry.kind === 'file') {
+      const file = await entry.getFile();
+      const newFileHandle = await currentDirHandle.getFileHandle(newName, { create: true });
+      const writable = await newFileHandle.createWritable();
+      await writable.write(await file.arrayBuffer());
+      await writable.close();
+      await currentDirHandle.removeEntry(entry.name);
+    } else if (entry.kind === 'directory') {
+      throw new Error('Rename folder tidak didukung pada browser ini.');
+    } else {
+      throw new Error('Tipe entri tidak diketahui.');
+    }
+  }
+
+  // Delete entry
+  async function deleteEntry(entry) {
+    await currentDirHandle.removeEntry(entry.name, { recursive: true });
+  }
+
+  // Paste function
+  async function pasteEntry() {
+    if (!clipboardFileHandle) return alert('Clipboard kosong.');
+    if (!currentDirHandle) return alert('Direktori saat ini tidak tersedia.');
+
+    const existingNames = await getNamesInDirectory(currentDirHandle);
+    if (existingNames.has(clipboardFileHandle.name)) {
+      alert('File/folder dengan nama sama sudah ada di sini.');
+      return;
+    }
+
+    if (clipboardFileHandle.kind === 'file') {
+      try {
+        const file = await clipboardFileHandle.getFile();
+        const newFileHandle = await currentDirHandle.getFileHandle(clipboardFileHandle.name, { create: true });
+        const writable = await newFileHandle.createWritable();
+        await writable.write(await file.arrayBuffer());
+        await writable.close();
+        if (isCutOperation) {
+          await currentDirHandle.removeEntry(clipboardFileHandle.name).catch(() => {});
+        }
+        clipboardFileHandle = null;
+        btnPaste.disabled = true;
+        loadFiles(currentDirHandle);
+        alert('File berhasil dipaste.');
+      } catch (e) {
+        alert('Gagal paste file: ' + e.message);
+      }
+    } else {
+      alert('Paste folder belum didukung.');
+    }
+  }
+
+  // Helper: get set of names in directory
+  async function getNamesInDirectory(dirHandle) {
+    const names = new Set();
+    for await (const entry of dirHandle.values()) {
+      names.add(entry.name);
+    }
+    return names;
+  }
+
+  btnCreateFolder.addEventListener('click', async () => {
+    const folderName = prompt('Masukkan nama folder baru:');
+    if (!folderName || folderName.trim() === '') return;
+    try {
+      await currentDirHandle.getDirectoryHandle(folderName.trim(), { create: true });
+      loadFiles(currentDirHandle);
+      alert('Folder berhasil dibuat.');
+    } catch (err) {
+      alert('Gagal membuat folder: ' + err.message);
+    }
+  });
+
+  btnCreateFile.addEventListener('click', async () => {
+    const fileName = prompt('Masukkan nama file baru (termasuk ekstensi, misal: dokumen.txt):');
+    if (!fileName || fileName.trim() === '') return;
+    try {
+      await currentDirHandle.getFileHandle(fileName.trim(), { create: true });
+      loadFiles(currentDirHandle);
+      alert('File berhasil dibuat.');
+    } catch (err) {
+      alert('Gagal membuat file: ' + err.message);
+    }
+  });
+
+  btnPaste.addEventListener('click', () => {
+    pasteEntry();
+  });
+
+  // Initial load
+  window.onload = () => {
+    if (!isFileSystemAccessAPISupported()) {
+      document.body.innerHTML = '<div style="color:#b71c1c; font-size:1.5rem; text-align:center; padding:3rem;">File System Access API tidak didukung di browser ini.<br />Gunakan browser terbaru seperti Chrome atau Edge.</div>';
+      return;
+    }
+    if (sessionStorage.getItem('nextfiles_permission_granted') === 'true') {
+      showProcessingModal();
+    } else {
+      requestPermissionUI();
+    }
+  };
+</script>
+</body>
+</html>
+
