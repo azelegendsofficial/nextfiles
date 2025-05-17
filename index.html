@@ -1,710 +1,1014 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NextFiles - Aplikasi File Manager Modern</title>
-    <link rel="manifest" href="manifest.json" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextRoot - Root Your Phone Online</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap');
-
+        :root {
+            --primary: #6200ee;
+            --primary-dark: #3700b3;
+            --secondary: #03dac6;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --error: #cf6679;
+            --on-primary: #ffffff;
+            --on-secondary: #000000;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+            --on-error: #000000;
+        }
+        
         * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: #0f2027;
-            background: linear-gradient(135deg, #2c5364, #203a43, #0f2027);
-            color: #ddd;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        header {
-            background: rgba(40, 180, 133, 0.88);
-            padding: 1rem 2rem;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #fff;
-            user-select: none;
-            box-shadow: 0 3px 15px rgba(15, 32, 39, 0.8);
-            letter-spacing: 1px;
-        }
-        #content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        #permission-request {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: 500;
-            user-select: none;
-        }
-        #permission-request p {
-            margin-bottom: 1.5rem;
-            color: #e0f2f1;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-        }
-        button {
-            background: #29ab87;
-            border: none;
-            border-radius: 8px;
-            padding: 1rem 2.25rem;
-            color: #fff;
-            font-weight: 600;
-            font-size: 1.15rem;
-            cursor: pointer;
-            box-shadow: 0 6px 18px rgba(41, 171, 135, 0.55);
-            transition: background-color 0.35s ease, box-shadow 0.35s ease;
-            user-select: none;
-            font-family: 'Poppins', sans-serif;
-        }
-        button:hover {
-            background: #1d6e59;
-            box-shadow: 0 8px 25px rgba(29, 110, 89, 0.85);
-        }
-        #file-manager {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: rgba(255 255 255 / 0.05);
-            border-radius: 12px;
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.25),
-                inset 0 0 30px rgba(255,255,255,0.03);
-            padding: 1rem 1.5rem 1.5rem;
-        }
-        #path-bar {
-            background: #1b4332;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            border-radius: 8px;
-            user-select: text;
-            display: flex;
-            align-items: center;
-            color: #a7d7c5;
-            font-weight: 500;
-            box-shadow:
-                inset 0 0 10px rgba(255,255,255,0.12);
-            letter-spacing: 0.05em;
-            font-family: monospace;
-        }
-        #controls {
-            margin: 1.25rem 0;
-            display: flex;
-            gap: 1.25rem;
-            flex-wrap: wrap;
-        }
-        #file-list {
-            flex: 1;
-            overflow-y: auto;
-            background: #143d2f;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow:
-                inset 0 0 25px rgba(0,0,0,0.8);
-            user-select: none;
-        }
-        ul.files {
-            list-style: none;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        ul.files > li {
+        
+        body {
+            background-color: var(--background);
+            color: var(--on-background);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            padding: 0.65rem 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.25s ease, color 0.25s ease;
-            font-weight: 500;
-            font-size: 1rem;
-            color: #d0f0e8;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+            justify-content: center;
+            flex: 1;
         }
-        ul.files > li:hover {
-            background: #2a6b49;
-            color: #f0fff5;
+        
+        header {
+            width: 100%;
+            padding: 1.5rem;
+            background-color: var(--surface);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
         }
-        ul.files > li.directory::before {
-            content: "📁";
-            margin-right: 0.7rem;
-            font-size: 1.3rem;
-            line-height: 1;
-        }
-        ul.files > li.file::before {
-            content: "📄";
-            margin-right: 0.7rem;
-            font-size: 1.3rem;
-            line-height: 1;
-        }
-        ul.files > li .actions {
+        
+        .logo {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 1rem;
         }
-        ul.files > li .actions button {
-            background: transparent;
-            border: none;
-            color: #64ffda;
-            font-size: 1.35rem;
-            padding: 0;
-            cursor: pointer;
-            transition: color 0.2s ease;
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
-            user-select: none;
+            justify-content: center;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            font-size: 1.5rem;
+            color: white;
         }
-        ul.files > li .actions button:hover {
-            color: #1de9b6;
+        
+        .card {
+            width: 100%;
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
         }
-
-        /* Modal styling */
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--on-surface);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            width: 100%;
+        }
+        
+        .status-label {
+            font-weight: 500;
+            margin-right: 1rem;
+            flex: 1;
+        }
+        
+        .status-value {
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .root-status-value.rooted {
+            background-color: rgba(0, 255, 0, 0.2);
+            color: #4caf50;
+        }
+        
+        .root-status-value.not-rooted {
+            background-color: rgba(255, 0, 0, 0.2);
+            color: #f44336;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            box-shadow: 0 4px 8px rgba(98, 0, 238, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 6px 12px rgba(98, 0, 238, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(98, 0, 238, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+            box-shadow: 0 4px 8px rgba(3, 218, 198, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(3, 218, 198, 0.1);
+            box-shadow: 0 6px 12px rgba(3, 218, 198, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(3, 218, 198, 0.1);
+        }
+        
+        .btn-danger {
+            background-color: var(--error);
+            color: var(--on-error);
+            box-shadow: 0 4px 8px rgba(207, 102, 121, 0.3);
+        }
+        
+        .btn-danger:hover {
+            background-color: #b0314f;
+            box-shadow: 0 6px 12px rgba(207, 102, 121, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(207, 102, 121, 0.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-full {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
         .modal {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom:0;
-            background: rgba(12, 26, 19, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            z-index: 9999;
-            backdrop-filter: blur(12px);
-        }
-        .modal.show {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
-            animation: fadeInModal 0.3s cubic-bezier(.4,0,.2,1) forwards;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
-        @keyframes fadeInModal {
-            from {opacity: 0; transform: translateY(30px);}
-            to {opacity: 1; transform: translateY(0);}
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
         }
+        
         .modal-content {
-            background: #1e3d2f;
+            background-color: var(--surface);
             border-radius: 16px;
-            padding: 2rem 3rem;
-            max-width: 420px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--on-surface);
+        }
+        
+        .modal-text {
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        .progress-container {
             width: 100%;
-            box-shadow: 0 8px 28px rgba(16,52,33,0.9);
-            color: #b9f6ca;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .root-steps {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .root-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        
+        .root-step.active {
+            opacity: 1;
+        }
+        
+        .root-step-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--on-surface);
+        }
+        
+        .root-step.complete .root-step-icon {
+            background-color: var(--secondary);
+            color: var(--on-secondary);
+        }
+        
+        .device-info {
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .device-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .device-info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .device-info-label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .device-info-value {
+            font-weight: 500;
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .feature-text {
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            padding: 1.5rem;
+            background-color: var(--surface);
             text-align: center;
-            user-select: none;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            letter-spacing: 0.02em;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: auto;
         }
-        .modal-content p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            line-height: 1.4;
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
         }
-        .modal-content button {
-            background: #26a69a;
-            border: none;
-            padding: 0.85rem 2rem;
-            font-weight: 700;
-            font-size: 1.05rem;
-            border-radius: 10px;
-            margin: 0 0.75rem;
-            cursor: pointer;
-            color: #00332f;
-            box-shadow: 0 6px 20px rgba(38,166,154,0.7);
-            transition: background-color 0.3s ease;
-            user-select: none;
-        }
-        .modal-content button:hover {
-            background: #00796b;
-            box-shadow: 0 8px 28px rgba(0,121,107,0.85);
-            color: #e0f2f1;
-        }
-        .modal-content button.close-btn {
-            background: #ef5350;
-            color: #fff;
-            box-shadow: 0 6px 20px rgba(239,83,80,0.8);
-        }
-        .modal-content button.close-btn:hover {
-            background: #b71c1c;
-            box-shadow: 0 8px 28px rgba(183,28,28,0.95);
-        }
-
-        input[type="text"] {
-            padding: 0.5rem 0.75rem;
-            font-size: 1.15rem;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            width: 100%;
-            user-select: text;
-            background: #0b402d;
-            color: #a6f1dc;
-            font-weight: 600;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);
-            letter-spacing: 0.03em;
-            font-family: 'Poppins', sans-serif;
-            transition: box-shadow 0.3s ease;
-        }
-        input[type="text"]:focus {
-            box-shadow: 0 0 12px #26a69a;
-        }
-        .input-group {
-            margin-bottom: 1.3rem;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #7fdfcc;
-            font-size: 1rem;
-            letter-spacing: 0.02em;
-        }
-
-        /* Scrollbars */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0d3728;
-            border-radius: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1db99a;
-            border-radius: 8px;
-            border: 3px solid #0d3728;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #12a682;
-        }
-
-        /* Responsive */
-        @media (max-width: 720px) {
-            #content {
-                padding: 1rem 1.2rem;
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
             }
-            header {
-                font-size: 1.6rem;
+            50% {
+                transform: scale(1.05);
             }
-            ul.files > li {
-                font-size: 0.93rem;
+            100% {
+                transform: scale(1);
             }
-            button {
-                font-size: 1rem;
-                padding: 0.85rem 1.75rem;
+        }
+        
+        .rotate {
+            animation: rotate 2s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
             }
-            .modal-content {
-                padding: 1.5rem 2rem;
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .features-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
-<header>NextFiles</header>
-<div id="content">
-  <div id="permission-request" class="centered-view" tabindex="0">
-    <p>Aplikasi NextFiles membutuhkan izin untuk membaca isi file handphone kamu.</p>
-    <button id="btn-request-permission" aria-label="Izinkan NextFiles untuk membaca isi file handphone kamu">
-      Izinkan NextFiles untuk membaca isi file handphone kamu
-    </button>
-  </div>
-
-  <div id="file-manager" aria-label="File Manager">
-    <div id="path-bar" aria-live="polite" aria-atomic="true">Path: /</div>
-    <div id="controls">
-      <button id="btn-create-folder">Buat Folder</button>
-      <button id="btn-create-file">Buat File</button>
-      <button id="btn-paste" disabled>Paste</button>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 4v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4m6 0v4"/>
+                    <path d="M8 4h8"/>
+                    <path d="M8 12h8"/>
+                    <path d="M8 16h8"/>
+                    <path d="M17 8h.01"/>
+                    <path d="M17 20h.01"/>
+                    <path d="M13 20h.01"/>
+                    <path d="M9 20h.01"/>
+                </svg>
+            </div>
+            <h1>NextRoot</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card fade-in" style="animation-delay: 0.1s;">
+            <h2 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Device Information
+            </h2>
+            
+            <div class="device-info">
+                <div class="device-info-item">
+                    <span class="device-info-label">Device Model:</span>
+                    <span class="device-info-value" id="device-model">Detecting...</span>
+                </div>
+                <div class="device-info-item">
+                    <span class="device-info-label">OS Version:</span>
+                    <span class="device-info-value" id="os-version">Detecting...</span>
+                </div>
+                <div class="device-info-item">
+                    <span class="device-info-label">Browser:</span>
+                    <span class="device-info-value" id="browser-info">Detecting...</span>
+                </div>
+            </div>
+            
+            <div class="status-section">
+                <div class="status-indicator">
+                    <span class="status-label">Root Status:</span>
+                    <span class="status-value root-status-value" id="root-status">Checking...</span>
+                </div>
+                
+                <button class="btn btn-secondary" id="check-root-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    Check Root Status
+                </button>
+            </div>
+            
+            <button class="btn btn-primary btn-full pulse" id="root-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20"/>
+                    <path d="M2 12h20"/>
+                </svg>
+                Click to Root Device
+            </button>
+            
+            <button class="btn btn-danger btn-full" id="unroot-btn" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Remove Root
+            </button>
+        </div>
+        
+        <div class="card fade-in" style="animation-delay: 0.2s;">
+            <h2 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Features & Permissions
+            </h2>
+            
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                            <polyline points="13 2 13 9 20 9"/>
+                        </svg>
+                    </div>
+                    <div class="feature-text">Full File System Access</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"/>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                        </svg>
+                    </div>
+                    <div class="feature-text">Device Reboot</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                            <line x1="6" y1="6" x2="6.01" y2="6"/>
+                            <line x1="6" y1="18" x2="6.01" y2="18"/>
+                        </svg>
+                    </div>
+                    <div class="feature-text">System Modification</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="feature-text">Admin Permissions</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="file-list" role="list" tabindex="0">
-      <ul class="files" id="files-ul"></ul>
+    
+    <!-- Root Process Modal -->
+    <div class="modal" id="root-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Rooting Device</h3>
+            <p class="modal-text">Please do not close this page or turn off your device during the rooting process. This may take a few minutes.</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="root-progress"></div>
+            </div>
+            
+            <ul class="root-steps">
+                <li class="root-step" data-step="1">
+                    <div class="root-step-icon">1</div>
+                    <div class="root-step-text">Preparing device for root access</div>
+                </li>
+                <li class="root-step" data-step="2">
+                    <div class="root-step-icon">2</div>
+                    <div class="root-step-text">Requesting necessary permissions</div>
+                </li>
+                <li class="root-step" data-step="3">
+                    <div class="root-step-icon">3</div>
+                    <div class="root-step-text">Installing root components</div>
+                </li>
+                <li class="root-step" data-step="4">
+                    <div class="root-step-icon">4</div>
+                    <div class="root-step-text">Modifying system settings</div>
+                </li>
+                <li class="root-step" data-step="5">
+                    <div class="root-step-icon">5</div>
+                    <div class="root-step-text">Finalizing root process</div>
+                </li>
+            </ul>
+            
+            <p class="modal-text" id="root-status-text">Initializing rooting process...</p>
+            
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="cancel-root-btn">Cancel</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<!-- Modal for processing -->
-<div id="modal-processing" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-message" aria-describedby="modal-buttons">
-  <div class="modal-content">
-    <p id="modal-message-processing">System Sedang Memproses Semua Data, Silahkan Masuk Lagi</p>
-    <button id="btn-open-app">Buka Aplikasi</button>
-    <button id="btn-close-popup" class="close-btn">Close Aplikasi</button>
-  </div>
-</div>
-
-<!-- Modal for rename confirmation -->
-<div id="modal-rename-confirm" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-message-rename" aria-describedby="modal-buttons-rename">
-  <div class="modal-content">
-    <p id="modal-message-rename">Apakah Kamu Yakni Ingin Rename Folder/File Ini?</p>
-    <input type="text" id="rename-input" aria-label="Nama baru folder/file" />
-    <div style="margin-top:1.5rem;">
-      <button id="btn-rename-yes">Ya</button>
-      <button id="btn-rename-no" class="close-btn">Tidak</button>
+    
+    <!-- Unroot Confirmation Modal -->
+    <div class="modal" id="unroot-confirm-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Remove Root Access</h3>
+            <p class="modal-text">Are you sure you want to remove root access from your device? This will return your device to its original state and remove all root privileges.</p>
+            
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="unroot-cancel-btn">No</button>
+                <button class="btn btn-danger" id="unroot-confirm-btn">Yes, Remove Root</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<script>
-  'use strict';
-
-  const btnRequestPermission = document.getElementById('btn-request-permission');
-  const permissionRequestDiv = document.getElementById('permission-request');
-  const fileManagerDiv = document.getElementById('file-manager');
-  const pathBar = document.getElementById('path-bar');
-  const filesUl = document.getElementById('files-ul');
-  const btnCreateFolder = document.getElementById('btn-create-folder');
-  const btnCreateFile = document.getElementById('btn-create-file');
-  const btnPaste = document.getElementById('btn-paste');
-  const modalProcessing = document.getElementById('modal-processing');
-  const btnOpenApp = document.getElementById('btn-open-app');
-  const btnClosePopup = document.getElementById('btn-close-popup');
-
-  const modalRenameConfirm = document.getElementById('modal-rename-confirm');
-  const btnRenameYes = document.getElementById('btn-rename-yes');
-  const btnRenameNo = document.getElementById('btn-rename-no');
-  const renameInput = document.getElementById('rename-input');
-
-  let rootHandle = null;
-  let currentDirHandle = null;
-  let clipboardFileHandle = null;
-  let isCutOperation = false;
-
-  let entryToRename = null;
-
-  // Check if File System Access API is supported
-  function isFileSystemAccessAPISupported() {
-    return 'showDirectoryPicker' in window && 'FileSystemFileHandle' in window;
-  }
-
-  // Show modal processing message
-  function showProcessingModal() {
-    modalProcessing.classList.add('show');
-  }
-  function hideProcessingModal() {
-    modalProcessing.classList.remove('show');
-  }
-  btnOpenApp.addEventListener('click', () => {
-    hideProcessingModal();
-    showFileManager();
-  });
-  btnClosePopup.addEventListener('click', () => {
-    hideProcessingModal();
-    requestPermissionUI();
-  });
-
-  // Show/hide rename confirmation modal
-  function showRenameModal(entry) {
-    entryToRename = entry;
-    renameInput.value = entry.name;
-    modalRenameConfirm.classList.add('show');
-    renameInput.focus();
-    renameInput.select();
-  }
-  function hideRenameModal() {
-    modalRenameConfirm.classList.remove('show');
-    entryToRename = null;
-  }
-  btnRenameNo.addEventListener('click', () => {
-    hideRenameModal();
-  });
-  btnRenameYes.addEventListener('click', async () => {
-    const newName = renameInput.value.trim();
-    if (!newName) {
-      alert('Nama tidak boleh kosong.');
-      return;
-    }
-    if (newName === entryToRename.name) {
-      hideRenameModal();
-      return;
-    }
-    try {
-      await renameEntry(entryToRename, newName);
-      loadFiles(currentDirHandle);
-    } catch (err) {
-      alert('Gagal mengganti nama: ' + err.message);
-    }
-    hideRenameModal();
-  });
-
-  // Initial UI state setup
-  function requestPermissionUI() {
-    permissionRequestDiv.style.display = 'flex';
-    fileManagerDiv.style.display = 'none';
-  }
-  function showFileManager() {
-    permissionRequestDiv.style.display = 'none';
-    fileManagerDiv.style.display = 'flex';
-    if (currentDirHandle) {
-      loadFiles(currentDirHandle);
-    }
-  }
-
-  // Prompt user to pick directory for permission
-  async function requestPermission() {
-    try {
-      const handle = await window.showDirectoryPicker();
-      if (handle) {
-        rootHandle = handle;
-        currentDirHandle = handle;
-        renderPathBar();
-        showProcessingModal();
-        sessionStorage.setItem('nextfiles_permission_granted', 'true');
-      }
-    } catch (e) {
-      if (e.name === 'AbortError') {
-        alert('Izin tidak diberikan, konten tidak dapat dibuka.');
-      } else {
-        alert('Terjadi kesalahan: ' + e.message);
-      }
-      requestPermissionUI();
-    }
-  }
-
-  btnRequestPermission.addEventListener('click', async () => {
-    await requestPermission();
-  });
-
-  // Render the current path (only root name, API limitation)
-  function renderPathBar() {
-    pathBar.textContent = `Path: /${currentDirHandle?.name || ''}`;
-  }
-
-  // List files and directories inside currentDirHandle
-  async function loadFiles(dirHandle) {
-    filesUl.innerHTML = '';
-    renderPathBar();
-    currentDirHandle = dirHandle;
-
-    const entries = [];
-    try {
-      for await (const entry of dirHandle.values()) {
-        entries.push(entry);
-      }
-    } catch (e) {
-      alert('Gagal membaca isi folder: ' + e.message);
-      return;
-    }
-    entries.sort((a,b) => {
-      if (a.kind === b.kind) return a.name.localeCompare(b.name);
-      return (a.kind === 'directory') ? -1 : 1;
-    });
-
-    if (entries.length === 0) {
-      const li = document.createElement('li');
-      li.textContent = '(Folder kosong)';
-      li.style.fontStyle = 'italic';
-      filesUl.appendChild(li);
-      return;
-    }
-
-    for (const entry of entries) {
-      const li = document.createElement('li');
-      li.textContent = entry.name;
-      li.className = entry.kind;
-      li.setAttribute('role', 'listitem');
-      li.tabIndex = 0;
-
-      // Create action buttons container
-      const actionsDiv = document.createElement('div');
-      actionsDiv.className = 'actions';
-
-      // Rename button -> uses new modal
-      const btnRename = document.createElement('button');
-      btnRename.title = 'Rename';
-      btnRename.innerHTML = '✏️';
-      btnRename.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showRenameModal(entry);
-      });
-      actionsDiv.appendChild(btnRename);
-
-      // Delete button
-      const btnDelete = document.createElement('button');
-      btnDelete.title = 'Hapus';
-      btnDelete.innerHTML = '🗑️';
-      btnDelete.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        if (confirm(`Hapus "${entry.name}"? Tindakan ini tidak bisa dibatalkan.`)) {
-          try {
-            await deleteEntry(entry);
-            loadFiles(currentDirHandle);
-            if (clipboardFileHandle && clipboardFileHandle.name === entry.name) {
-              clipboardFileHandle = null;
-              btnPaste.disabled = true;
-              alert('Item di clipboard dihapus.');
+    
+    <!-- Unroot Process Modal -->
+    <div class="modal" id="unroot-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Removing Root Access</h3>
+            <p class="modal-text">Please do not close this page or turn off your device during this process.</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="unroot-progress"></div>
+            </div>
+            
+            <ul class="root-steps">
+                <li class="root-step" data-step="1">
+                    <div class="root-step-icon">1</div>
+                    <div class="root-step-text">Preparing for unroot</div>
+                </li>
+                <li class="root-step" data-step="2">
+                    <div class="root-step-icon">2</div>
+                    <div class="root-step-text">Removing root components</div>
+                </li>
+                <li class="root-step" data-step="3">
+                    <div class="root-step-icon">3</div>
+                    <div class="root-step-text">Restoring system settings</div>
+                </li>
+                <li class="root-step" data-step="4">
+                    <div class="root-step-icon">4</div>
+                    <div class="root-step-text">Finalizing</div>
+                </li>
+            </ul>
+            
+            <p class="modal-text" id="unroot-status-text">Initializing unroot process...</p>
+        </div>
+    </div>
+    
+    <!-- Reboot Confirmation Modal -->
+    <div class="modal" id="reboot-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Device Reboot Required</h3>
+            <p class="modal-text">Your device needs to be rebooted to complete the process. Please save any unsaved work before proceeding.</p>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="reboot-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"/>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                    Reboot Now
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>NextRoot &copy; 2025 - Advanced Mobile Rooting Solution</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const rootBtn = document.getElementById('root-btn');
+            const unrootBtn = document.getElementById('unroot-btn');
+            const checkRootBtn = document.getElementById('check-root-btn');
+            const rootStatus = document.getElementById('root-status');
+            const rootModal = document.getElementById('root-modal');
+            const unrootConfirmModal = document.getElementById('unroot-confirm-modal');
+            const unrootModal = document.getElementById('unroot-modal');
+            const rebootModal = document.getElementById('reboot-modal');
+            const cancelRootBtn = document.getElementById('cancel-root-btn');
+            const unrootCancelBtn = document.getElementById('unroot-cancel-btn');
+            const unrootConfirmBtn = document.getElementById('unroot-confirm-btn');
+            const rebootBtn = document.getElementById('reboot-btn');
+            const rootProgress = document.getElementById('root-progress');
+            const unrootProgress = document.getElementById('unroot-progress');
+            const rootStatusText = document.getElementById('root-status-text');
+            const unrootStatusText = document.getElementById('unroot-status-text');
+            
+            // Device info elements
+            const deviceModel = document.getElementById('device-model');
+            const osVersion = document.getElementById('os-version');
+            const browserInfo = document.getElementById('browser-info');
+            
+            // Local storage key for root status
+            const ROOT_STATUS_KEY = 'nextroot_root_status';
+            
+            // Detect device info
+            function detectDeviceInfo() {
+                const userAgent = navigator.userAgent;
+                
+                // Detect browser
+                let browser = 'Unknown';
+                if (userAgent.indexOf('Chrome') > -1) browser = 'Chrome';
+                else if (userAgent.indexOf('Chrome') > -1) browser = 'Chrome';
+                else if (userAgent.indexOf('Safari') > -1) browser = 'Safari';
+                else if (userAgent.indexOf('Firefox') > -1) browser = 'Firefox';
+                else if (userAgent.indexOf('MSIE') > -1 || userAgent.indexOf('Trident/') > -1) browser = 'Internet Explorer';
+                else if (userAgent.indexOf('Edge') > -1) browser = 'Edge';
+                
+                // Detect device model and OS
+                let model = 'Desktop';
+                let os = 'Unknown';
+                
+                if (/Android/.test(userAgent)) {
+                    os = 'Android ' + (userAgent.match(/Android (\d+(\.\d+)?)/) || [])[1];
+                    model = (userAgent.match(/\((.+?)\)/) || [])[1] || 'Android Device';
+                } else if (/iPhone|iPad|iPod/.test(userAgent)) {
+                    os = 'iOS ' + (userAgent.match(/OS (\d+[_]\d+)/) || [])[1]?.replace('_', '.') || '';
+                    if (/iPhone/.test(userAgent)) model = 'iPhone';
+                    else if (/iPad/.test(userAgent)) model = 'iPad';
+                    else if (/iPod/.test(userAgent)) model = 'iPod';
+                } else if (/Windows/.test(userAgent)) {
+                    os = 'Windows ' + (userAgent.match(/Windows NT (\d+\.\d+)/) || [])[1];
+                } else if (/Mac OS X/.test(userAgent)) {
+                    os = 'macOS ' + (userAgent.match(/Mac OS X (\d+[._]\d+)/) || [])[1]?.replace('_', '.') || '';
+                } else if (/Linux/.test(userAgent)) {
+                    os = 'Linux';
+                }
+                
+                // Update device info in UI
+                deviceModel.textContent = model;
+                osVersion.textContent = os;
+                browserInfo.textContent = browser;
             }
-          } catch (err) {
-            alert('Gagal menghapus: ' + err.message);
-          }
-        }
-      });
-      actionsDiv.appendChild(btnDelete);
-
-      // Copy button
-      const btnCopy = document.createElement('button');
-      btnCopy.title = 'Copy';
-      btnCopy.innerHTML = '📋';
-      btnCopy.addEventListener('click', (e) => {
-        e.stopPropagation();
-        clipboardFileHandle = entry;
-        isCutOperation = false;
-        btnPaste.disabled = false;
-        alert(`"${entry.name}" disalin.`);
-      });
-      actionsDiv.appendChild(btnCopy);
-
-      // Cut button
-      const btnCut = document.createElement('button');
-      btnCut.title = 'Cut';
-      btnCut.innerHTML = '✂️';
-      btnCut.addEventListener('click', (e) => {
-        e.stopPropagation();
-        clipboardFileHandle = entry;
-        isCutOperation = true;
-        btnPaste.disabled = false;
-        alert(`"${entry.name}" dipotong.`);
-      });
-      actionsDiv.appendChild(btnCut);
-
-      li.appendChild(actionsDiv);
-
-      li.addEventListener('click', async () => {
-        if (entry.kind === 'directory') {
-          currentDirHandle = entry;
-          loadFiles(entry);
-        } else {
-          try {
-            const file = await entry.getFile();
-            alert(`Membuka file: ${entry.name}\nUkuran: ${file.size} bytes`);
-          } catch (err) {
-            alert('Gagal membuka file: ' + err.message);
-          }
-        }
-      });
-
-      filesUl.appendChild(li);
-    }
-  }
-
-  // Rename entry: copies file contents and deletes old file; folders not renamed (API limitation)
-  async function renameEntry(entry, newName) {
-    if (entry.kind === 'file') {
-      const file = await entry.getFile();
-      const newFileHandle = await currentDirHandle.getFileHandle(newName, { create: true });
-      const writable = await newFileHandle.createWritable();
-      await writable.write(await file.arrayBuffer());
-      await writable.close();
-      await currentDirHandle.removeEntry(entry.name);
-    } else if (entry.kind === 'directory') {
-      throw new Error('Rename folder tidak didukung pada browser ini.');
-    } else {
-      throw new Error('Tipe entri tidak diketahui.');
-    }
-  }
-
-  // Delete entry
-  async function deleteEntry(entry) {
-    await currentDirHandle.removeEntry(entry.name, { recursive: true });
-  }
-
-  // Paste function
-  async function pasteEntry() {
-    if (!clipboardFileHandle) return alert('Clipboard kosong.');
-    if (!currentDirHandle) return alert('Direktori saat ini tidak tersedia.');
-
-    const existingNames = await getNamesInDirectory(currentDirHandle);
-    if (existingNames.has(clipboardFileHandle.name)) {
-      alert('File/folder dengan nama sama sudah ada di sini.');
-      return;
-    }
-
-    if (clipboardFileHandle.kind === 'file') {
-      try {
-        const file = await clipboardFileHandle.getFile();
-        const newFileHandle = await currentDirHandle.getFileHandle(clipboardFileHandle.name, { create: true });
-        const writable = await newFileHandle.createWritable();
-        await writable.write(await file.arrayBuffer());
-        await writable.close();
-        if (isCutOperation) {
-          await currentDirHandle.removeEntry(clipboardFileHandle.name).catch(() => {});
-        }
-        clipboardFileHandle = null;
-        btnPaste.disabled = true;
-        loadFiles(currentDirHandle);
-        alert('File berhasil dipaste.');
-      } catch (e) {
-        alert('Gagal paste file: ' + e.message);
-      }
-    } else {
-      alert('Paste folder belum didukung.');
-    }
-  }
-
-  // Helper: get set of names in directory
-  async function getNamesInDirectory(dirHandle) {
-    const names = new Set();
-    for await (const entry of dirHandle.values()) {
-      names.add(entry.name);
-    }
-    return names;
-  }
-
-  btnCreateFolder.addEventListener('click', async () => {
-    const folderName = prompt('Masukkan nama folder baru:');
-    if (!folderName || folderName.trim() === '') return;
-    try {
-      await currentDirHandle.getDirectoryHandle(folderName.trim(), { create: true });
-      loadFiles(currentDirHandle);
-      alert('Folder berhasil dibuat.');
-    } catch (err) {
-      alert('Gagal membuat folder: ' + err.message);
-    }
-  });
-
-  btnCreateFile.addEventListener('click', async () => {
-    const fileName = prompt('Masukkan nama file baru (termasuk ekstensi, misal: dokumen.txt):');
-    if (!fileName || fileName.trim() === '') return;
-    try {
-      await currentDirHandle.getFileHandle(fileName.trim(), { create: true });
-      loadFiles(currentDirHandle);
-      alert('File berhasil dibuat.');
-    } catch (err) {
-      alert('Gagal membuat file: ' + err.message);
-    }
-  });
-
-  btnPaste.addEventListener('click', () => {
-    pasteEntry();
-  });
-
-  // Initial load
-  window.onload = () => {
-    if (!isFileSystemAccessAPISupported()) {
-      document.body.innerHTML = '<div style="color:#ef5350; font-size:1.5rem; text-align:center; padding:3rem;">File System Access API tidak didukung di browser ini.<br />Gunakan browser terbaru seperti Chrome atau Edge.</div>';
-      return;
-    }
-    if (sessionStorage.getItem('nextfiles_permission_granted') === 'true') {
-      showProcessingModal();
-    } else {
-      requestPermissionUI();
-    }
-  };
-</script>
+            
+            // Check root status
+            function checkRootStatus() {
+                const isRooted = localStorage.getItem(ROOT_STATUS_KEY) === 'true';
+                rootStatus.textContent = isRooted ? 'Rooted' : 'Not Rooted';
+                rootStatus.className = isRooted ? 
+                    'status-value root-status-value rooted' : 
+                    'status-value root-status-value not-rooted';
+                
+                // Show/hide appropriate buttons
+                rootBtn.style.display = isRooted ? 'none' : 'flex';
+                unrootBtn.style.display = isRooted ? 'flex' : 'none';
+                
+                return isRooted;
+            }
+            
+            // Ripple effect for buttons
+            function createRipple(event) {
+                const button = event.currentTarget;
+                const ripple = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                
+                ripple.style.width = ripple.style.height = `${diameter}px`;
+                ripple.style.left = `${event.clientX - button.getBoundingClientRect().left - diameter / 2}px`;
+                ripple.style.top = `${event.clientY - button.getBoundingClientRect().top - diameter / 2}px`;
+                ripple.classList.add('ripple');
+                
+                const existingRipple = button.querySelector('.ripple');
+                if (existingRipple) {
+                    existingRipple.remove();
+                }
+                
+                button.appendChild(ripple);
+                
+                // Remove ripple after animation
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+            
+            // Root process simulation
+            function simulateRootProcess() {
+                let progress = 0;
+                let currentStep = 1;
+                rootProgress.style.width = '0%';
+                
+                // Mark first step as active
+                document.querySelector(`.root-step[data-step="${currentStep}"]`).classList.add('active');
+                
+                const interval = setInterval(() => {
+                    progress += 1;
+                    rootProgress.style.width = `${progress}%`;
+                    
+                    // Update steps
+                    if (progress >= 20 && currentStep === 1) {
+                        updateRootStep(1, 2);
+                        rootStatusText.textContent = 'Requesting device permissions...';
+                        currentStep = 2;
+                    } else if (progress >= 40 && currentStep === 2) {
+                        updateRootStep(2, 3);
+                        rootStatusText.textContent = 'Installing necessary components...';
+                        currentStep = 3;
+                    } else if (progress >= 60 && currentStep === 3) {
+                        updateRootStep(3, 4);
+                        rootStatusText.textContent = 'Modifying system files...';
+                        currentStep = 4;
+                    } else if (progress >= 80 && currentStep === 4) {
+                        updateRootStep(4, 5);
+                        rootStatusText.textContent = 'Finalizing root process...';
+                        currentStep = 5;
+                    }
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        completeRootProcess();
+                    }
+                }, 50);
+            }
+            
+            // Update root step
+            function updateRootStep(prevStep, nextStep) {
+                const prevStepEl = document.querySelector(`.root-step[data-step="${prevStep}"]`);
+                const nextStepEl = document.querySelector(`.root-step[data-step="${nextStep}"]`);
+                
+                prevStepEl.classList.remove('active');
+                prevStepEl.classList.add('complete');
+                nextStepEl.classList.add('active');
+            }
+            
+            // Complete root process
+            function completeRootProcess() {
+                rootStatusText.textContent = 'Root process completed. Rebooting device...';
+                
+                setTimeout(() => {
+                    // Close root modal
+                    rootModal.classList.remove('active');
+                    
+                    // Show reboot modal
+                    rebootModal.classList.add('active');
+                    
+                    // Set root status
+                    localStorage.setItem(ROOT_STATUS_KEY, 'true');
+                }, 1000);
+            }
+            
+            // Unroot process simulation
+            function simulateUnrootProcess() {
+                let progress = 0;
+                let currentStep = 1;
+                unrootProgress.style.width = '0%';
+                
+                // Mark first step as active
+                document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal).classList.add('active');
+                
+                const interval = setInterval(() => {
+                    progress += 1;
+                    unrootProgress.style.width = `${progress}%`;
+                    
+                    // Update steps
+                    if (progress >= 25 && currentStep === 1) {
+                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
+                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
+                        prevStepEl.classList.remove('active');
+                        prevStepEl.classList.add('complete');
+                        nextStepEl.classList.add('active');
+                        unrootStatusText.textContent = 'Removing root components...';
+                        currentStep = 2;
+                    } else if (progress >= 50 && currentStep === 2) {
+                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
+                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
+                        prevStepEl.classList.remove('active');
+                        prevStepEl.classList.add('complete');
+                        nextStepEl.classList.add('active');
+                        unrootStatusText.textContent = 'Restoring system settings...';
+                        currentStep = 3;
+                    } else if (progress >= 75 && currentStep === 3) {
+                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
+                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
+                        prevStepEl.classList.remove('active');
+                        prevStepEl.classList.add('complete');
+                        nextStepEl.classList.add('active');
+                        unrootStatusText.textContent = 'Finalizing unroot process...';
+                        currentStep = 4;
+                    }
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        completeUnrootProcess();
+                    }
+                }, 30);
+            }
+            
+            // Complete unroot process
+            function completeUnrootProcess() {
+                unrootStatusText.textContent = 'Unroot completed. Rebooting device...';
+                
+                setTimeout(() => {
+                    // Close unroot modal
+                    unrootModal.classList.remove('active');
+                    
+                    // Show reboot modal
+                    rebootModal.classList.add('active');
+                    
+                    // Set root status
+                    localStorage.setItem(ROOT_STATUS_KEY, 'false');
+                }, 1000);
+            }
+            
+            // Initialize
+            detectDeviceInfo();
+            checkRootStatus();
+            
+            // Event listeners
+            rootBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                rootModal.classList.add('active');
+                simulateRootProcess();
+            });
+            
+            unrootBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                unrootConfirmModal.classList.add('active');
+            });
+            
+            checkRootBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                checkRootStatus();
+            });
+            
+            cancelRootBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                rootModal.classList.remove('active');
+            });
+            
+            unrootCancelBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                unrootConfirmModal.classList.remove('active');
+            });
+            
+            unrootConfirmBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                unrootConfirmModal.classList.remove('active');
+                unrootModal.classList.add('active');
+                simulateUnrootProcess();
+            });
+            
+            rebootBtn.addEventListener('click', function(e) {
+                createRipple(e);
+                rebootModal.classList.remove('active');
+                checkRootStatus();
+            });
+            
+            // Add ripple effect to all buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', createRipple);
+            });
+        });
+    </script>
 </body>
 </html>
-
