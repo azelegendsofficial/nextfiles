@@ -1,454 +1,579 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrianStore - Jual Akun Game & Layanan Web</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Brian Store</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
+            background-color: #0d1117;
+            color: #58a6ff;
+            height: 100vh;
+            padding: 20px;
+            overflow: hidden;
         }
         
-        .hero-section {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
-        .card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        .title {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #58a6ff;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.7);
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .welcome {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #c9d1d9;
         }
         
-        .login-btn {
-            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        .terminal {
+            background-color: #161b22;
+            flex: 1;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid #30363d;
         }
         
-        .login-btn:hover {
-            background: linear-gradient(135deg, #d946ef 0%, #8b5cf6 100%);
+        .prompt {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .prompt-symbol {
+            color: #7ee787;
+            margin-right: 10px;
+        }
+        
+        .input-area {
+            position: relative;
+            width: 100%;
+        }
+        
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #c9d1d9;
+            width: 100%;
+            font-size: 1rem;
+            caret-color: #c9d1d9;
+            outline: none;
+        }
+        
+        .output {
+            margin-top: 10px;
+            color: #c9d1d9;
+            white-space: pre-wrap;
+        }
+        
+        .highlight {
+            color: #ff7b72;
+        }
+        
+        .success {
+            color: #7ee787;
+        }
+        
+        .alert {
+            color: #ffa657;
+        }
+        
+        .separator {
+            border-top: 1px dashed #30363d;
+            margin: 10px 0;
+        }
+        
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #161b22;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            border: 1px solid #30363d;
+            display: none;
+            text-align: center;
+        }
+        
+        .popup-content {
+            margin-bottom: 20px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid rgba(88, 166, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #58a6ff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .fullscreen-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d1117;
+            z-index: 200;
+            display: none;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .about-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #58a6ff;
+        }
+        
+        .about-content {
+            color: #c9d1d9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .menu-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #c9d1d9;
+            cursor: pointer;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #161b22;
+            padding: 20px;
+            transition: left 0.3s ease-in-out;
+            z-index: 300;
+            border-right: 1px solid #30363d;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .sidebar-btn:hover {
+            background-color: #30363d;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 250;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <span class="text-indigo-600 font-bold text-2xl">BrianStore</span>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Home
-                        </a>
-                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            ClientArea
-                        </a>
-                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Produk
-                        </a>
-                    </div>
-                </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center">
-                    <button class="login-btn text-white px-4 py-2 rounded-md font-medium">
-                        Login
-                    </button>
-                </div>
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <i class="fas fa-bars"></i>
-                    </button>
+    <div class="container">
+        <h1 class="title">Brian Store</h1>
+        <p class="welcome">Selamat datang di terminal Brian Store. Silakan jalankan perintah sudo ./help.sh</p>
+        <div class="terminal" id="terminal">
+            <div class="prompt">
+                <span class="prompt-symbol">brian@store:~$</span>
+                <div class="input-area">
+                    <input type="text" id="cmd-input" autofocus>
                 </div>
             </div>
-        </div>
-        
-        <!-- Mobile menu, show/hide based on menu state. -->
-        <div class="sm:hidden hidden" id="mobile-menu">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-                    Home
-                </a>
-                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-                    ClientArea
-                </a>
-                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-                    Produk
-                </a>
-            </div>
-            <div class="pt-4 pb-3 border-t border-gray-200">
-                <div class="flex items-center px-4">
-                    <button class="login-btn text-white px-4 py-2 rounded-md font-medium w-full">
-                        Login
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <div class="hero-section text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-                        BrianStore
-                    </h1>
-                    <p class="mt-6 text-xl max-w-3xl">
-                        Pusat terbaik untuk semua kebutuhan akun game dan layanan web Anda. Kami menyediakan berbagai akun game premium dan layanan hosting berkualitas.
-                    </p>
-                    <div class="mt-8 flex">
-                        <a href="#" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-md font-medium">
-                            Lihat Produk
-                        </a>
-                        <a href="#" class="ml-4 bg-transparent border border-white text-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-md font-medium">
-                            Tentang Kami
-                        </a>
-                    </div>
-                </div>
-                <div class="hidden md:block">
-                    <img src="https://ik.imagekit.io/glnwdmssex/_Pngtree_3d%20illustration%20of%20cloud%20computing_20209552.png">
-                </div>
-            </div>
+            <div class="output" id="output"></div>
         </div>
     </div>
 
-    <!-- Featured Categories -->
-    <div class="bg-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">
-                Kategori Produk
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Gaming Accounts Category -->
-                <div class="card bg-gradient-to-br from-pink-500 to-rose-500 p-6 rounded-xl text-white text-center">
-                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-gamepad text-pink-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Akun Game</h3>
-                    <p class="mb-4">Free Fire, Roblox, dan berbagai akun game populer lainnya.</p>
-                    <a href="#" class="inline-block bg-white text-pink-500 px-4 py-2 rounded-md font-medium">Lihat</a>
-                </div>
-                
-                <!-- VPS Category -->
-                <div class="card bg-gradient-to-br from-blue-500 to-indigo-500 p-6 rounded-xl text-white text-center">
-                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-server text-blue-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">VPS</h3>
-                    <p class="mb-4">Server virtual pribadi dengan performa tinggi dan keamanan terjamin.</p>
-                    <a href="#" class="inline-block bg-white text-blue-500 px-4 py-2 rounded-md font-medium">Lihat</a>
-                </div>
-                
-                <!-- RDP Category -->
-                <div class="card bg-gradient-to-br from-purple-500 to-violet-500 p-6 rounded-xl text-white text-center">
-                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-desktop text-purple-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">RDP</h3>
-                    <p class="mb-4">Remote Desktop Protocol untuk mengakses komputer dari jarak jauh.</p>
-                    <a href="#" class="inline-block bg-white text-purple-500 px-4 py-2 rounded-md font-medium">Lihat</a>
-                </div>
-                
-                <!-- Web Design Category -->
-                <div class="card bg-gradient-to-br from-amber-500 to-orange-500 p-6 rounded-xl text-white text-center">
-                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-code text-amber-500 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">Web Design</h3>
-                    <p class="mb-4">Desain website modern dan responsif sesuai kebutuhan Anda.</p>
-                    <a href="#" class="inline-block bg-white text-amber-500 px-4 py-2 rounded-md font-medium">Lihat</a>
-                </div>
-            </div>
+    <div class="popup" id="loading-popup">
+        <div class="popup-content">Sedang Memproses Data</div>
+        <div class="spinner"></div>
+    </div>
+
+    <div class="fullscreen-popup" id="about-popup">
+        <button class="menu-toggle" id="menu-toggle">&#8942;</button>
+        <h2 class="about-title">About</h2>
+        <div class="about-content">
+            <p>Brian Store adalah platform premium yang menyediakan berbagai akun game, layanan VPS, dan produk digital berkualitas tinggi. Dibentuk pada tahun 2023, Brian Store telah dipercaya oleh ribuan pengguna untuk menyediakan produk digital dengan jaminan keaslian dan dukungan after-sales yang memuaskan.</p>
+            <br>
+            <p>Tim kami terdiri dari para profesional yang berpengalaman di bidang teknologi dan game, yang selalu siap membantu Anda dengan kebutuhan digital Anda. Kami berkomitmen untuk memberikan pengalaman berbelanja yang aman, nyaman, dan terpercaya.</p>
+            <br>
+            <p>Brian Store juga aktif mengadakan giveaway dan promo spesial secara berkala. Ikuti terus info terbaru kami untuk mendapatkan penawaran menarik!</p>
+            <br>
+            <p>Untuk pertanyaan dan bantuan, Anda dapat menghubungi tim support kami yang siap membantu 24/7.</p>
         </div>
     </div>
 
-    <!-- Featured Products -->
-    <div class="bg-gray-50 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-6">
-                Produk Unggulan
-            </h2>
-            <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">
-                Produk paling populer dengan harga terbaik dan kualitas terjamin
-            </p>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Product 1 -->
-                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://ik.imagekit.io/glnwdmssex/b93e8583-988f-4bee-87ce-6d9b4ea3f443.jpg?updatedAt=1747458082780" alt="Free Fire Account" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-pink-600 bg-pink-200 mb-2">
-                            Akun Game
-                        </span>
-                        <h3 class="text-lg font-semibold text-gray-900">Akun Free Fire</h3>
-                        <p class="text-gray-500 text-sm mb-4">Level 63, Vault 286, Emote 34, Animasi Masuk Lobby 1, Senjata 310, Evogun Shotgun Sterling Conqueror LVL 4, Evogun Famas Demonic Grin LVL 2.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-indigo-600 font-bold">Rp 270.000</span>
-                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
-                                Tidak Di Jual!
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 2 -->
-                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://ik.imagekit.io/glnwdmssex/Screenshot%202025-05-17%20141304.png" alt="Roblox Account" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-pink-600 bg-pink-200 mb-2">
-                            Akun Game
-                        </span>
-                        <h3 class="text-lg font-semibold text-gray-900">Akun Roblox</h3>
-                        <p class="text-gray-500 text-sm mb-4">Robux Bertambah Setiap Bulan, Speck Akun Bisa Tanya Owner</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-indigo-600 font-bold">Rp 250.000</span>
-                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
-                                Beli
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 3 -->
-                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="h-48 bg-gray-200">
-                        <img src="data:image/jpeg;base64,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" alt="VPS" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 mb-2">
-                            VPS
-                        </span>
-                        <h3 class="text-lg font-semibold text-gray-900">VPS Low Budget</h3>
-                        <p class="text-gray-500 text-sm mb-4">23 Core CPU, 5GB RAM, 391GB SSD</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-indigo-600 font-bold">Rp 150.000/bulan</span>
-                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
-                                Beli
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 4 -->
-                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7GuktPrSRmRo0UDg3yZynvPdos_6-mbjnwQ&s" alt="Web Design" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4">
-                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-amber-600 bg-amber-200 mb-2">
-                            Category: Web Design
-                        </span>
-                        <h3 class="text-lg font-semibold text-gray-900">Paket Web Premium</h3>
-                        <p class="text-gray-500 text-sm mb-4">Desain modern dengan admin panel</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-indigo-600 font-bold">Rp 120.000 - 6.100.099</span>
-                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
-                                Lihat Produk Lainnya
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-8">
-                <a href="#" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md font-medium">
-                    Lihat Semua Produk
-                </a>
-            </div>
-        </div>
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-btn" id="exit-btn">Keluar</button>
     </div>
 
-    <!-- Testimonials -->
-    <div class="bg-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">
-                Testimonial Pelanggan
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                            <i class="fas fa-user text-gray-500"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-semibold">Ahmad Rizki</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">
-                        "VPS yang saya beli dari BrianStore benar-benar sesuai deskripsi. Pelayanan cepat dan responsif. Sangat recommended!"
-                    </p>
-                </div>
-                
-                <!-- Testimonial 2 -->
-                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                            <i class="fas fa-user text-gray-500"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-semibold">Budi Santoso</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">
-                        "VPS dari BrianStore performanya mantap, tidak pernah down selama 6 bulan saya pakai. Customer service juga sangat membantu."
-                    </p>
-                </div>
-                
-                <!-- Testimonial 3 -->
-                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                            <i class="fas fa-user text-gray-500"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-semibold">Dewi Lestari</h4>
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">
-                        "Desain website untuk bisnis saya sangat memuaskan, modern dan responsif. Terima kasih BrianStore sudah membantu usaha saya tampil lebih profesional."
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="bg-indigo-600 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-                    Siap untuk memulai?
-                </h2>
-                <p class="mt-4 text-xl text-indigo-100 max-w-2xl mx-auto">
-                    Daftar sekarang dan dapatkan diskon 10% untuk pembelian pertama Anda
-                </p>
-                <div class="mt-8 flex justify-center">
-                    <a href="#" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-md font-medium">
-                        Daftar Sekarang
-                    </a>
-                    <a href="#" class="ml-4 bg-transparent border border-white text-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-md font-medium">
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">BrianStore</h3>
-                    <p class="text-gray-400 mb-4">
-                        Pusat terbaik untuk semua kebutuhan akun game dan layanan web Anda.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Produk</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Akun Game</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">VPS</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">RDP</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Web Design</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Layanan</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Cara Pembelian</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Metode Pembayaran</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Kontak Kami</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt mr-2"></i>
-                            <span class="text-gray-400">+62 852-4251-0587</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-2"></i>
-                            <span class="text-gray-400">info@brianstore.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
-                <p>&copy; 2025 BrianStore. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <div class="overlay" id="overlay"></div>
 
     <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuButton = document.querySelector('button[aria-expanded]');
-            const mobileMenu = document.getElementById('mobile-menu');
+        const terminal = document.getElementById('terminal');
+        const outputElement = document.getElementById('output');
+        const inputElement = document.getElementById('cmd-input');
+        const loadingPopup = document.getElementById('loading-popup');
+        const aboutPopup = document.getElementById('about-popup');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const exitBtn = document.getElementById('exit-btn');
+        
+        // Focus input on start and when clicking terminal
+        inputElement.focus();
+        terminal.addEventListener('click', () => {
+            inputElement.focus();
+        });
+        
+        // Command history
+        const commandHistory = [];
+        let historyIndex = -1;
+        
+        function addToOutput(text, className = '') {
+            const output = document.createElement('div');
+            output.className = className ? className : 'output-text';
+            output.innerHTML = text;
+            outputElement.appendChild(output);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function createNewPrompt() {
+            const promptDiv = document.createElement('div');
+            promptDiv.className = 'prompt';
+            promptDiv.innerHTML = `
+                <span class="prompt-symbol">brian@store:~$</span>
+                <div class="input-area">
+                    <span id="previous-command"></span>
+                </div>
+            `;
+            outputElement.appendChild(promptDiv);
+        }
+        
+        function downloadFile(filename, content) {
+            const element = document.createElement('a');
             
-            if (menuButton && mobileMenu) {
-                menuButton.addEventListener('click', function() {
-                    const expanded = this.getAttribute('aria-expanded') === 'true';
-                    this.setAttribute('aria-expanded', !expanded);
-                    mobileMenu.classList.toggle('hidden');
-                });
+            // For text files
+            if (filename.endsWith('.txt')) {
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            } 
+            // For XML files or other types
+            else {
+                element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent(content));
             }
+            
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        
+        // Generate a random ticket code
+        function generateTicketCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 16; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Calculate expiry date (6 weeks from now)
+        function getExpiryDate() {
+            const date = new Date();
+            date.setDate(date.getDate() + 42); // 6 weeks = 42 days
+            return date.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric'
+            });
+        }
+        
+        // Handle command input
+        inputElement.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = inputElement.value.trim();
+                
+                // Store command in history
+                if (command) {
+                    commandHistory.push(command);
+                    historyIndex = commandHistory.length;
+                }
+                
+                // Show the command
+                document.getElementById('previous-command').textContent = command;
+                inputElement.value = '';
+                
+                // Process command
+                processCommand(command);
+                
+                // Create new prompt for next command
+                createNewPrompt();
+            } else if (event.key === 'ArrowUp') {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    inputElement.value = commandHistory[historyIndex];
+                }
+                event.preventDefault();
+            } else if (event.key === 'ArrowDown') {
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    inputElement.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    inputElement.value = '';
+                }
+                event.preventDefault();
+            }
+        });
+        
+        function processCommand(command) {
+            if (command === 'sudo ./help.sh') {
+                addToOutput(`
+                <div class="separator"></div>
+                <span class="success">Brian Store Command List:</span>
+                <br><br>
+                ./privacy - Menampilkan kebijakan privasi
+                <br>
+                ./produk - Mendownload list produk
+                <br>
+                ./about - Informasi tentang Brian Store
+                <br>
+                ./payment - Menampilkan metode pembayaran yang didukung
+                <br>
+                ./claim-account-roblox - Klaim akun Roblox premium
+                <div class="separator"></div>
+                `);
+            } 
+            else if (command === './privacy') {
+                addToOutput(`
+                <div class="separator"></div>
+                <span class="success">Kebijakan Privasi Brian Store</span>
+                <br><br>
+                1. Data yang kami kumpulkan:
+                   - Informasi identitas dasar (nama, email)
+                   - Riwayat transaksi
+                   - Data penggunaan layanan
+                <br>
+                2. Penggunaan Data:
+                   - Memproses transaksi Anda
+                   - Meningkatkan layanan kami
+                   - Komunikasi terkait layanan dan produk
+                <br>
+                3. Keamanan:
+                   - Kami mengenkripsi semua data sensitif
+                   - Kami tidak pernah menjual data Anda ke pihak ketiga
+                   - Akses data dibatasi hanya untuk staf yang berwenang
+                <br>
+                4. Cookie:
+                   - Kami menggunakan cookie untuk meningkatkan pengalaman pengguna
+                   - Anda dapat menonaktifkan cookie melalui pengaturan browser
+                <br>
+                5. Hak Pengguna:
+                   - Anda berhak mengakses data pribadi Anda
+                   - Anda dapat meminta penghapusan data
+                   - Anda dapat membatasi penggunaan data Anda
+                <div class="separator"></div>
+                `);
+            } 
+            else if (command === './produk') {
+                const productContent = `DAFTAR PRODUK BRIAN STORE
+==============================
+
+[AKUN GAME]
+- Roblox Premium | Rp 75.000
+- Roblox Robux 1000 | Rp 150.000
+- Roblox Robux 2000 | Rp 275.000
+- Free Fire Diamond 500 | Rp 60.000
+- Free Fire Diamond 1000 | Rp 120.000
+- Free Fire Weekly Member | Rp 30.000
+- Minecraft Java Edition | Rp 250.000
+- Mobile Legends Diamond 500 | Rp 125.000
+
+[LAYANAN HOSTING]
+- VPS Basic (2GB RAM, 1vCPU) | Rp 80.000/bulan
+- VPS Pro (4GB RAM, 2vCPU) | Rp 150.000/bulan
+- VPS Enterprise (8GB RAM, 4vCPU) | Rp 290.000/bulan
+- RDP Basic Windows (4GB RAM) | Rp 120.000/bulan
+- RDP Pro Windows (8GB RAM) | Rp 220.000/bulan
+- Web Hosting (5GB SSD) | Rp 25.000/bulan
+
+[SOFTWARE & LICENSE]
+- Windows 10 Pro License | Rp 180.000
+- Office 365 (1 tahun) | Rp 350.000
+- Adobe Creative Cloud (1 bulan) | Rp 200.000
+- Antivirus Premium (1 tahun) | Rp 150.000
+
+Untuk pemesanan dan informasi lebih lanjut, silakan hubungi customer service kami.
+Harga dapat berubah sewaktu-waktu tanpa pemberitahuan.
+
+© Brian Store 2025
+`;
+                downloadFile('brian-store-list-product.txt', productContent);
+                addToOutput('<span class="success">Mendownload list produk...</span>');
+            } 
+            else if (command === './about') {
+                loadingPopup.style.display = 'block';
+                
+                setTimeout(() => {
+                    loadingPopup.style.display = 'none';
+                    aboutPopup.style.display = 'block';
+                }, 6000);
+            } 
+            else if (command === './payment') {
+                addToOutput(`
+                <div class="separator"></div>
+                <span class="success">Metode Pembayaran yang Didukung:</span>
+                <br><br>
+                ✅ Paypal - Tersedia
+                <br>
+                ✅ OVO - Tersedia
+                <br>
+                <span class="highlight">❌ QRIS - Tidak Tersedia</span>
+                <br>
+                <span class="highlight">❌ Cash - Tidak Tersedia</span>
+                <br>
+                <span class="highlight">❌ Dana - Tidak Tersedia</span>
+                <br>
+                ✅ GoPay - Tersedia
+                <div class="separator"></div>
+                `);
+            } 
+            else if (command === './claim-account-roblox') {
+                // Generate ticket code
+                const ticketCode = generateTicketCode();
+                const expiryDate = getExpiryDate();
+                
+                const ticketContent = `BRIAN STORE - ROBLOX PREMIUM ACCOUNT TICKET
+======================================
+
+Ticket Code: ${ticketCode}
+Issue Date: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+Expiry Date: ${expiryDate}
+
+INSTRUCTIONS:
+1. Copy the ticket code
+2. Login to your Roblox account
+3. Go to https://www.roblox.com/redeem
+4. Paste your ticket code and claim
+5. Enjoy your premium benefits!
+
+For assistance, contact our customer support.
+
+NOTE: This ticket is for one-time use only and is non-transferable.
+Do not share this code with anyone.
+
+© Brian Store 2025
+`;
+                
+                // Generate dummy system file content
+                const systemFileContent = `<?xml version="1.0" encoding="UTF-8"?>
+<ticket-verification xmlns:kt="http://brianstore.com/schema">
+    <meta>
+        <timestamp>${Date.now()}</timestamp>
+        <version>1.0.4</version>
+        <signature>dG9rZW46YnJpYW5zdG9yZV9zeXN0ZW1fdjEuMi41</signature>
+    </meta>
+    <data>
+        <ticket id="${ticketCode}" type="premium">
+            <issue-date>${new Date().toISOString()}</issue-date>
+            <expiry>${new Date(Date.now() + 42 * 24 * 60 * 60 * 1000).toISOString()}</expiry>
+            <status>active</status>
+            <product>roblox-premium</product>
+            <grade>1</grade>
+        </ticket>
+        <verification-hash>
+            ${Array.from({length: 5}, () => Math.random().toString(36).substring(2, 15)).join('-')}
+        </verification-hash>
+    </data>
+    <kt:gradle-build>
+        <kt:task name="verify">
+            <kt:action>checksum</kt:action>
+            <kt:param name="algorithm">SHA-256</kt:param>
+        </kt:task>
+    </kt:gradle-build>
+</ticket-verification>`;
+                
+                downloadFile('code.txt', ticketContent);
+                downloadFile('system64.kt.xml.grade', systemFileContent);
+                
+                addToOutput('<span class="success">Mendownload ticket kode dan file sistem...</span>');
+            } 
+            else {
+                addToOutput(`<span class="alert">Command tidak dikenal: ${command}</span><br><span class="alert">Ketik 'sudo ./help.sh' untuk melihat daftar perintah.</span>`);
+            }
+        }
+        
+        // About popup sidebar functionality
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.style.display = 'block';
+        });
+        
+        exitBtn.addEventListener('click', () => {
+            loadingPopup.style.display = 'block';
+            
+            setTimeout(() => {
+                loadingPopup.style.display = 'none';
+                sidebar.classList.remove('active');
+                overlay.style.display = 'none';
+                aboutPopup.style.display = 'none';
+            }, 8000);
+        });
+        
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
         });
     </script>
 </body>
