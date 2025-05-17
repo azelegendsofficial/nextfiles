@@ -1,1013 +1,458 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextRoot - Root Your Phone Online</title>
+    <title>BrianStore - Jual Akun Game & Layanan Web</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary: #6200ee;
-            --primary-dark: #3700b3;
-            --secondary: #03dac6;
-            --background: #121212;
-            --surface: #1e1e1e;
-            --error: #cf6679;
-            --on-primary: #ffffff;
-            --on-secondary: #000000;
-            --on-background: #ffffff;
-            --on-surface: #ffffff;
-            --on-error: #000000;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         body {
-            background-color: var(--background);
-            color: var(--on-background);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
         }
         
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-        }
-        
-        header {
-            width: 100%;
-            padding: 1.5rem;
-            background-color: var(--surface);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 8px;
-            font-size: 1.5rem;
-            color: white;
+        .hero-section {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
         }
         
         .card {
-            width: 100%;
-            background-color: var(--surface);
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--on-surface);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .login-btn {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
         }
         
-        .status-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            margin: 1rem 0;
-            padding: 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            width: 100%;
-        }
-        
-        .status-label {
-            font-weight: 500;
-            margin-right: 1rem;
-            flex: 1;
-        }
-        
-        .status-value {
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .root-status-value.rooted {
-            background-color: rgba(0, 255, 0, 0.2);
-            color: #4caf50;
-        }
-        
-        .root-status-value.not-rooted {
-            background-color: rgba(255, 0, 0, 0.2);
-            color: #f44336;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            outline: none;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--on-primary);
-            box-shadow: 0 4px 8px rgba(98, 0, 238, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            box-shadow: 0 6px 12px rgba(98, 0, 238, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(98, 0, 238, 0.2);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--secondary);
-            border: 2px solid var(--secondary);
-            box-shadow: 0 4px 8px rgba(3, 218, 198, 0.1);
-        }
-        
-        .btn-secondary:hover {
-            background-color: rgba(3, 218, 198, 0.1);
-            box-shadow: 0 6px 12px rgba(3, 218, 198, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(3, 218, 198, 0.1);
-        }
-        
-        .btn-danger {
-            background-color: var(--error);
-            color: var(--on-error);
-            box-shadow: 0 4px 8px rgba(207, 102, 121, 0.3);
-        }
-        
-        .btn-danger:hover {
-            background-color: #b0314f;
-            box-shadow: 0 6px 12px rgba(207, 102, 121, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(207, 102, 121, 0.2);
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            width: 100%;
-            justify-content: center;
-        }
-        
-        .btn-full {
-            width: 100%;
-            margin: 0.5rem 0;
-        }
-        
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-        
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-        
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .modal-content {
-            background-color: var(--surface);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-        
-        .modal-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--on-surface);
-        }
-        
-        .modal-text {
-            margin-bottom: 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-        }
-        
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 1.5rem 0;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .root-steps {
-            list-style: none;
-            margin: 1rem 0;
-        }
-        
-        .root-step {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
-        }
-        
-        .root-step.active {
-            opacity: 1;
-        }
-        
-        .root-step-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--on-surface);
-        }
-        
-        .root-step.complete .root-step-icon {
-            background-color: var(--secondary);
-            color: var(--on-secondary);
-        }
-        
-        .device-info {
-            padding: 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .device-info-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
-        }
-        
-        .device-info-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .device-info-label {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .device-info-value {
-            font-weight: 500;
-        }
-        
-        .features-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-        
-        .feature-item:hover {
-            transform: translateY(-3px);
-            background-color: rgba(255, 255, 255, 0.08);
-        }
-        
-        .feature-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            font-size: 1.2rem;
-        }
-        
-        .feature-text {
-            font-size: 0.9rem;
-        }
-        
-        footer {
-            padding: 1.5rem;
-            background-color: var(--surface);
-            text-align: center;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: auto;
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        .rotate {
-            animation: rotate 2s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-        
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .card {
-                padding: 1.5rem;
-                margin: 1rem 0;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
-            
-            .features-list {
-                grid-template-columns: 1fr;
-            }
-            
-            .section-title {
-                font-size: 1.3rem;
-            }
+        .login-btn:hover {
+            background: linear-gradient(135deg, #d946ef 0%, #8b5cf6 100%);
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <div class="logo-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 4v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4m6 0v4"/>
-                    <path d="M8 4h8"/>
-                    <path d="M8 12h8"/>
-                    <path d="M8 16h8"/>
-                    <path d="M17 8h.01"/>
-                    <path d="M17 20h.01"/>
-                    <path d="M13 20h.01"/>
-                    <path d="M9 20h.01"/>
-                </svg>
-            </div>
-            <h1>NextRoot</h1>
-        </div>
-    </header>
-    
-    <div class="container">
-        <div class="card fade-in" style="animation-delay: 0.1s;">
-            <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                Device Information
-            </h2>
-            
-            <div class="device-info">
-                <div class="device-info-item">
-                    <span class="device-info-label">Device Model:</span>
-                    <span class="device-info-value" id="device-model">Detecting...</span>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-indigo-600 font-bold text-2xl">BrianStore</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Home
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            ClientArea
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Produk
+                        </a>
+                    </div>
                 </div>
-                <div class="device-info-item">
-                    <span class="device-info-label">OS Version:</span>
-                    <span class="device-info-value" id="os-version">Detecting...</span>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button class="login-btn text-white px-4 py-2 rounded-md font-medium">
+                        Login
+                    </button>
                 </div>
-                <div class="device-info-item">
-                    <span class="device-info-label">Browser:</span>
-                    <span class="device-info-value" id="browser-info">Detecting...</span>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="status-section">
-                <div class="status-indicator">
-                    <span class="status-label">Root Status:</span>
-                    <span class="status-value root-status-value" id="root-status">Checking...</span>
-                </div>
-                
-                <button class="btn btn-secondary" id="check-root-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                    Check Root Status
-                </button>
-            </div>
-            
-            <button class="btn btn-primary btn-full pulse" id="root-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v20"/>
-                    <path d="M2 12h20"/>
-                </svg>
-                Click to Root Device
-            </button>
-            
-            <button class="btn btn-danger btn-full" id="unroot-btn" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
-                </svg>
-                Remove Root
-            </button>
         </div>
         
-        <div class="card fade-in" style="animation-delay: 0.2s;">
-            <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                Features & Permissions
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+                    Home
+                </a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+                    ClientArea
+                </a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+                    Produk
+                </a>
+            </div>
+            <div class="pt-4 pb-3 border-t border-gray-200">
+                <div class="flex items-center px-4">
+                    <button class="login-btn text-white px-4 py-2 rounded-md font-medium w-full">
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                        BrianStore
+                    </h1>
+                    <p class="mt-6 text-xl max-w-3xl">
+                        Pusat terbaik untuk semua kebutuhan akun game dan layanan web Anda. Kami menyediakan berbagai akun game premium dan layanan hosting berkualitas.
+                    </p>
+                    <div class="mt-8 flex">
+                        <a href="#" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-md font-medium">
+                            Lihat Produk
+                        </a>
+                        <a href="#" class="ml-4 bg-transparent border border-white text-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-md font-medium">
+                            Tentang Kami
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <img src="/api/placeholder/600/400" alt="BrianStore Hero Image" class="rounded-lg shadow-xl">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Categories -->
+    <div class="bg-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">
+                Kategori Produk
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Gaming Accounts Category -->
+                <div class="card bg-gradient-to-br from-pink-500 to-rose-500 p-6 rounded-xl text-white text-center">
+                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-gamepad text-pink-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Akun Game</h3>
+                    <p class="mb-4">Free Fire, Roblox, dan berbagai akun game populer lainnya.</p>
+                    <a href="#" class="inline-block bg-white text-pink-500 px-4 py-2 rounded-md font-medium">Lihat</a>
+                </div>
+                
+                <!-- VPS Category -->
+                <div class="card bg-gradient-to-br from-blue-500 to-indigo-500 p-6 rounded-xl text-white text-center">
+                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-server text-blue-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">VPS</h3>
+                    <p class="mb-4">Server virtual pribadi dengan performa tinggi dan keamanan terjamin.</p>
+                    <a href="#" class="inline-block bg-white text-blue-500 px-4 py-2 rounded-md font-medium">Lihat</a>
+                </div>
+                
+                <!-- RDP Category -->
+                <div class="card bg-gradient-to-br from-purple-500 to-violet-500 p-6 rounded-xl text-white text-center">
+                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-desktop text-purple-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">RDP</h3>
+                    <p class="mb-4">Remote Desktop Protocol untuk mengakses komputer dari jarak jauh.</p>
+                    <a href="#" class="inline-block bg-white text-purple-500 px-4 py-2 rounded-md font-medium">Lihat</a>
+                </div>
+                
+                <!-- Web Design Category -->
+                <div class="card bg-gradient-to-br from-amber-500 to-orange-500 p-6 rounded-xl text-white text-center">
+                    <div class="h-16 w-16 mx-auto bg-white rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-code text-amber-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Web Design</h3>
+                    <p class="mb-4">Desain website modern dan responsif sesuai kebutuhan Anda.</p>
+                    <a href="#" class="inline-block bg-white text-amber-500 px-4 py-2 rounded-md font-medium">Lihat</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    <div class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-6">
+                Produk Unggulan
+            </h2>
+            <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">
+                Produk paling populer dengan harga terbaik dan kualitas terjamin
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Product 1 -->
+                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-200">
+                        <img src="/api/placeholder/300/200" alt="Free Fire Account" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-pink-600 bg-pink-200 mb-2">
+                            Akun Game
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900">Akun Free Fire Premium</h3>
+                        <p class="text-gray-500 text-sm mb-4">Level 50+ dengan skin elite dan karakter lengkap</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-indigo-600 font-bold">Rp 200.000</span>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
+                                Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-200">
+                        <img src="/api/placeholder/300/200" alt="Roblox Account" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-pink-600 bg-pink-200 mb-2">
+                            Akun Game
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900">Akun Roblox Premium</h3>
+                        <p class="text-gray-500 text-sm mb-4">Akun dengan Robux dan item langka</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-indigo-600 font-bold">Rp 250.000</span>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
+                                Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-200">
+                        <img src="/api/placeholder/300/200" alt="VPS" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 mb-2">
+                            VPS
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900">VPS Premium</h3>
+                        <p class="text-gray-500 text-sm mb-4">4 Core CPU, 8GB RAM, 100GB SSD</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-indigo-600 font-bold">Rp 150.000/bulan</span>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
+                                Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-200">
+                        <img src="/api/placeholder/300/200" alt="Web Design" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-amber-600 bg-amber-200 mb-2">
+                            Web Design
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900">Paket Web Premium</h3>
+                        <p class="text-gray-500 text-sm mb-4">Desain modern dengan admin panel</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-indigo-600 font-bold">Rp 1.500.000</span>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
+                                Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="#" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md font-medium">
+                    Lihat Semua Produk
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="bg-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">
+                Testimonial Pelanggan
             </h2>
             
-            <div class="features-list">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
-                            <polyline points="13 2 13 9 20 9"/>
-                        </svg>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-semibold">Ahmad Rizki</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-text">Full File System Access</div>
+                    <p class="text-gray-600">
+                        "Akun Free Fire yang saya beli dari BrianStore benar-benar sesuai deskripsi. Pelayanan cepat dan responsif. Sangat recommended!"
+                    </p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 4 23 10 17 10"/>
-                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                        </svg>
+                
+                <!-- Testimonial 2 -->
+                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-semibold">Budi Santoso</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-text">Device Reboot</div>
+                    <p class="text-gray-600">
+                        "VPS dari BrianStore performanya mantap, tidak pernah down selama 6 bulan saya pakai. Customer service juga sangat membantu."
+                    </p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-                            <line x1="6" y1="6" x2="6.01" y2="6"/>
-                            <line x1="6" y1="18" x2="6.01" y2="18"/>
-                        </svg>
+                
+                <!-- Testimonial 3 -->
+                <div class="card bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-semibold">Dewi Lestari</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-text">System Modification</div>
+                    <p class="text-gray-600">
+                        "Desain website untuk bisnis saya sangat memuaskan, modern dan responsif. Terima kasih BrianStore sudah membantu usaha saya tampil lebih profesional."
+                    </p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-indigo-600 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                    Siap untuk memulai?
+                </h2>
+                <p class="mt-4 text-xl text-indigo-100 max-w-2xl mx-auto">
+                    Daftar sekarang dan dapatkan diskon 10% untuk pembelian pertama Anda
+                </p>
+                <div class="mt-8 flex justify-center">
+                    <a href="#" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-md font-medium">
+                        Daftar Sekarang
+                    </a>
+                    <a href="#" class="ml-4 bg-transparent border border-white text-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-md font-medium">
+                        Pelajari Lebih Lanjut
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">BrianStore</h3>
+                    <p class="text-gray-400 mb-4">
+                        Pusat terbaik untuk semua kebutuhan akun game dan layanan web Anda.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
-                    <div class="feature-text">Admin Permissions</div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Produk</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Akun Game</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">VPS</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">RDP</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Web Design</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Cara Pembelian</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Metode Pembayaran</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Kontak Kami</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span class="text-gray-400">Jl. Raya Taman No. 123, Sidoarjo, Indonesia</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i>
+                            <span class="text-gray-400">+62 812-3456-7890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span class="text-gray-400">info@brianstore.com</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Root Process Modal -->
-    <div class="modal" id="root-modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Rooting Device</h3>
-            <p class="modal-text">Please do not close this page or turn off your device during the rooting process. This may take a few minutes.</p>
             
-            <div class="progress-container">
-                <div class="progress-bar" id="root-progress"></div>
-            </div>
-            
-            <ul class="root-steps">
-                <li class="root-step" data-step="1">
-                    <div class="root-step-icon">1</div>
-                    <div class="root-step-text">Preparing device for root access</div>
-                </li>
-                <li class="root-step" data-step="2">
-                    <div class="root-step-icon">2</div>
-                    <div class="root-step-text">Requesting necessary permissions</div>
-                </li>
-                <li class="root-step" data-step="3">
-                    <div class="root-step-icon">3</div>
-                    <div class="root-step-text">Installing root components</div>
-                </li>
-                <li class="root-step" data-step="4">
-                    <div class="root-step-icon">4</div>
-                    <div class="root-step-text">Modifying system settings</div>
-                </li>
-                <li class="root-step" data-step="5">
-                    <div class="root-step-icon">5</div>
-                    <div class="root-step-text">Finalizing root process</div>
-                </li>
-            </ul>
-            
-            <p class="modal-text" id="root-status-text">Initializing rooting process...</p>
-            
-            <div class="btn-group">
-                <button class="btn btn-secondary" id="cancel-root-btn">Cancel</button>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>&copy; 2025 BrianStore. All rights reserved.</p>
             </div>
         </div>
-    </div>
-    
-    <!-- Unroot Confirmation Modal -->
-    <div class="modal" id="unroot-confirm-modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Remove Root Access</h3>
-            <p class="modal-text">Are you sure you want to remove root access from your device? This will return your device to its original state and remove all root privileges.</p>
-            
-            <div class="btn-group">
-                <button class="btn btn-secondary" id="unroot-cancel-btn">No</button>
-                <button class="btn btn-danger" id="unroot-confirm-btn">Yes, Remove Root</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Unroot Process Modal -->
-    <div class="modal" id="unroot-modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Removing Root Access</h3>
-            <p class="modal-text">Please do not close this page or turn off your device during this process.</p>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="unroot-progress"></div>
-            </div>
-            
-            <ul class="root-steps">
-                <li class="root-step" data-step="1">
-                    <div class="root-step-icon">1</div>
-                    <div class="root-step-text">Preparing for unroot</div>
-                </li>
-                <li class="root-step" data-step="2">
-                    <div class="root-step-icon">2</div>
-                    <div class="root-step-text">Removing root components</div>
-                </li>
-                <li class="root-step" data-step="3">
-                    <div class="root-step-icon">3</div>
-                    <div class="root-step-text">Restoring system settings</div>
-                </li>
-                <li class="root-step" data-step="4">
-                    <div class="root-step-icon">4</div>
-                    <div class="root-step-text">Finalizing</div>
-                </li>
-            </ul>
-            
-            <p class="modal-text" id="unroot-status-text">Initializing unroot process...</p>
-        </div>
-    </div>
-    
-    <!-- Reboot Confirmation Modal -->
-    <div class="modal" id="reboot-modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Device Reboot Required</h3>
-            <p class="modal-text">Your device needs to be rebooted to complete the process. Please save any unsaved work before proceeding.</p>
-            
-            <div class="btn-group">
-                <button class="btn btn-primary" id="reboot-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 4v6h-6"/>
-                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                    </svg>
-                    Reboot Now
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <footer>
-        <p>NextRoot &copy; 2025 - Advanced Mobile Rooting Solution</p>
     </footer>
-    
+
     <script>
+        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const rootBtn = document.getElementById('root-btn');
-            const unrootBtn = document.getElementById('unroot-btn');
-            const checkRootBtn = document.getElementById('check-root-btn');
-            const rootStatus = document.getElementById('root-status');
-            const rootModal = document.getElementById('root-modal');
-            const unrootConfirmModal = document.getElementById('unroot-confirm-modal');
-            const unrootModal = document.getElementById('unroot-modal');
-            const rebootModal = document.getElementById('reboot-modal');
-            const cancelRootBtn = document.getElementById('cancel-root-btn');
-            const unrootCancelBtn = document.getElementById('unroot-cancel-btn');
-            const unrootConfirmBtn = document.getElementById('unroot-confirm-btn');
-            const rebootBtn = document.getElementById('reboot-btn');
-            const rootProgress = document.getElementById('root-progress');
-            const unrootProgress = document.getElementById('unroot-progress');
-            const rootStatusText = document.getElementById('root-status-text');
-            const unrootStatusText = document.getElementById('unroot-status-text');
+            const menuButton = document.querySelector('button[aria-expanded]');
+            const mobileMenu = document.getElementById('mobile-menu');
             
-            // Device info elements
-            const deviceModel = document.getElementById('device-model');
-            const osVersion = document.getElementById('os-version');
-            const browserInfo = document.getElementById('browser-info');
-            
-            // Local storage key for root status
-            const ROOT_STATUS_KEY = 'nextroot_root_status';
-            
-            // Detect device info
-            function detectDeviceInfo() {
-                const userAgent = navigator.userAgent;
-                
-                // Detect browser
-                let browser = 'Unknown';
-                if (userAgent.indexOf('Chrome') > -1) browser = 'Chrome';
-                else if (userAgent.indexOf('Chrome') > -1) browser = 'Chrome';
-                else if (userAgent.indexOf('Safari') > -1) browser = 'Safari';
-                else if (userAgent.indexOf('Firefox') > -1) browser = 'Firefox';
-                else if (userAgent.indexOf('MSIE') > -1 || userAgent.indexOf('Trident/') > -1) browser = 'Internet Explorer';
-                else if (userAgent.indexOf('Edge') > -1) browser = 'Edge';
-                
-                // Detect device model and OS
-                let model = 'Desktop';
-                let os = 'Unknown';
-                
-                if (/Android/.test(userAgent)) {
-                    os = 'Android ' + (userAgent.match(/Android (\d+(\.\d+)?)/) || [])[1];
-                    model = (userAgent.match(/\((.+?)\)/) || [])[1] || 'Android Device';
-                } else if (/iPhone|iPad|iPod/.test(userAgent)) {
-                    os = 'iOS ' + (userAgent.match(/OS (\d+[_]\d+)/) || [])[1]?.replace('_', '.') || '';
-                    if (/iPhone/.test(userAgent)) model = 'iPhone';
-                    else if (/iPad/.test(userAgent)) model = 'iPad';
-                    else if (/iPod/.test(userAgent)) model = 'iPod';
-                } else if (/Windows/.test(userAgent)) {
-                    os = 'Windows ' + (userAgent.match(/Windows NT (\d+\.\d+)/) || [])[1];
-                } else if (/Mac OS X/.test(userAgent)) {
-                    os = 'macOS ' + (userAgent.match(/Mac OS X (\d+[._]\d+)/) || [])[1]?.replace('_', '.') || '';
-                } else if (/Linux/.test(userAgent)) {
-                    os = 'Linux';
-                }
-                
-                // Update device info in UI
-                deviceModel.textContent = model;
-                osVersion.textContent = os;
-                browserInfo.textContent = browser;
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    const expanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !expanded);
+                    mobileMenu.classList.toggle('hidden');
+                });
             }
-            
-            // Check root status
-            function checkRootStatus() {
-                const isRooted = localStorage.getItem(ROOT_STATUS_KEY) === 'true';
-                rootStatus.textContent = isRooted ? 'Rooted' : 'Not Rooted';
-                rootStatus.className = isRooted ? 
-                    'status-value root-status-value rooted' : 
-                    'status-value root-status-value not-rooted';
-                
-                // Show/hide appropriate buttons
-                rootBtn.style.display = isRooted ? 'none' : 'flex';
-                unrootBtn.style.display = isRooted ? 'flex' : 'none';
-                
-                return isRooted;
-            }
-            
-            // Ripple effect for buttons
-            function createRipple(event) {
-                const button = event.currentTarget;
-                const ripple = document.createElement('span');
-                const diameter = Math.max(button.clientWidth, button.clientHeight);
-                
-                ripple.style.width = ripple.style.height = `${diameter}px`;
-                ripple.style.left = `${event.clientX - button.getBoundingClientRect().left - diameter / 2}px`;
-                ripple.style.top = `${event.clientY - button.getBoundingClientRect().top - diameter / 2}px`;
-                ripple.classList.add('ripple');
-                
-                const existingRipple = button.querySelector('.ripple');
-                if (existingRipple) {
-                    existingRipple.remove();
-                }
-                
-                button.appendChild(ripple);
-                
-                // Remove ripple after animation
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            }
-            
-            // Root process simulation
-            function simulateRootProcess() {
-                let progress = 0;
-                let currentStep = 1;
-                rootProgress.style.width = '0%';
-                
-                // Mark first step as active
-                document.querySelector(`.root-step[data-step="${currentStep}"]`).classList.add('active');
-                
-                const interval = setInterval(() => {
-                    progress += 1;
-                    rootProgress.style.width = `${progress}%`;
-                    
-                    // Update steps
-                    if (progress >= 20 && currentStep === 1) {
-                        updateRootStep(1, 2);
-                        rootStatusText.textContent = 'Requesting device permissions...';
-                        currentStep = 2;
-                    } else if (progress >= 40 && currentStep === 2) {
-                        updateRootStep(2, 3);
-                        rootStatusText.textContent = 'Installing necessary components...';
-                        currentStep = 3;
-                    } else if (progress >= 60 && currentStep === 3) {
-                        updateRootStep(3, 4);
-                        rootStatusText.textContent = 'Modifying system files...';
-                        currentStep = 4;
-                    } else if (progress >= 80 && currentStep === 4) {
-                        updateRootStep(4, 5);
-                        rootStatusText.textContent = 'Finalizing root process...';
-                        currentStep = 5;
-                    }
-                    
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        completeRootProcess();
-                    }
-                }, 50);
-            }
-            
-            // Update root step
-            function updateRootStep(prevStep, nextStep) {
-                const prevStepEl = document.querySelector(`.root-step[data-step="${prevStep}"]`);
-                const nextStepEl = document.querySelector(`.root-step[data-step="${nextStep}"]`);
-                
-                prevStepEl.classList.remove('active');
-                prevStepEl.classList.add('complete');
-                nextStepEl.classList.add('active');
-            }
-            
-            // Complete root process
-            function completeRootProcess() {
-                rootStatusText.textContent = 'Root process completed. Rebooting device...';
-                
-                setTimeout(() => {
-                    // Close root modal
-                    rootModal.classList.remove('active');
-                    
-                    // Show reboot modal
-                    rebootModal.classList.add('active');
-                    
-                    // Set root status
-                    localStorage.setItem(ROOT_STATUS_KEY, 'true');
-                }, 1000);
-            }
-            
-            // Unroot process simulation
-            function simulateUnrootProcess() {
-                let progress = 0;
-                let currentStep = 1;
-                unrootProgress.style.width = '0%';
-                
-                // Mark first step as active
-                document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal).classList.add('active');
-                
-                const interval = setInterval(() => {
-                    progress += 1;
-                    unrootProgress.style.width = `${progress}%`;
-                    
-                    // Update steps
-                    if (progress >= 25 && currentStep === 1) {
-                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
-                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
-                        prevStepEl.classList.remove('active');
-                        prevStepEl.classList.add('complete');
-                        nextStepEl.classList.add('active');
-                        unrootStatusText.textContent = 'Removing root components...';
-                        currentStep = 2;
-                    } else if (progress >= 50 && currentStep === 2) {
-                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
-                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
-                        prevStepEl.classList.remove('active');
-                        prevStepEl.classList.add('complete');
-                        nextStepEl.classList.add('active');
-                        unrootStatusText.textContent = 'Restoring system settings...';
-                        currentStep = 3;
-                    } else if (progress >= 75 && currentStep === 3) {
-                        const prevStepEl = document.querySelector(`.root-step[data-step="${currentStep}"]`, unrootModal);
-                        const nextStepEl = document.querySelector(`.root-step[data-step="${currentStep + 1}"]`, unrootModal);
-                        prevStepEl.classList.remove('active');
-                        prevStepEl.classList.add('complete');
-                        nextStepEl.classList.add('active');
-                        unrootStatusText.textContent = 'Finalizing unroot process...';
-                        currentStep = 4;
-                    }
-                    
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        completeUnrootProcess();
-                    }
-                }, 30);
-            }
-            
-            // Complete unroot process
-            function completeUnrootProcess() {
-                unrootStatusText.textContent = 'Unroot completed. Rebooting device...';
-                
-                setTimeout(() => {
-                    // Close unroot modal
-                    unrootModal.classList.remove('active');
-                    
-                    // Show reboot modal
-                    rebootModal.classList.add('active');
-                    
-                    // Set root status
-                    localStorage.setItem(ROOT_STATUS_KEY, 'false');
-                }, 1000);
-            }
-            
-            // Initialize
-            detectDeviceInfo();
-            checkRootStatus();
-            
-            // Event listeners
-            rootBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                rootModal.classList.add('active');
-                simulateRootProcess();
-            });
-            
-            unrootBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                unrootConfirmModal.classList.add('active');
-            });
-            
-            checkRootBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                checkRootStatus();
-            });
-            
-            cancelRootBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                rootModal.classList.remove('active');
-            });
-            
-            unrootCancelBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                unrootConfirmModal.classList.remove('active');
-            });
-            
-            unrootConfirmBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                unrootConfirmModal.classList.remove('active');
-                unrootModal.classList.add('active');
-                simulateUnrootProcess();
-            });
-            
-            rebootBtn.addEventListener('click', function(e) {
-                createRipple(e);
-                rebootModal.classList.remove('active');
-                checkRootStatus();
-            });
-            
-            // Add ripple effect to all buttons
-            document.querySelectorAll('.btn').forEach(button => {
-                button.addEventListener('click', createRipple);
-            });
         });
     </script>
 </body>
